@@ -1,0 +1,5 @@
+﻿; --------------------------------------
+LIBRARY Pogosort
+EXPORTS DllEntry
+EXPORTS BubbleSort
+; --------------------------------------
