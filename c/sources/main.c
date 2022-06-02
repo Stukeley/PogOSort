@@ -6,7 +6,7 @@
 #include "../headers/IsSorted.h"
 
 #define N 100
-#define FCOUNT 1
+#define FCOUNT 3
 
 int main() 
 {
@@ -16,12 +16,14 @@ int main()
     void (*sorts[FCOUNT]) (int32_t * arr, int32_t n);
 
     sorts[0] = BubbleSort;
+    sorts[1] = InsertionSort;
+    sorts[2] = SelectionSort;
 
     for (int i =0;i<FCOUNT;i++)
     {
         int32_t* copy = malloc(N * sizeof(int32_t));
 
-        memcpy(copy, arr, sizeof(copy));
+        memcpy(copy, arr, N * sizeof(int32_t));
 
         PrintArray(copy, N);
 

@@ -2,4 +2,8 @@
 LIBRARY Pogosort
 EXPORTS DllEntry
 EXPORTS BubbleSort
+EXPORTS SelectionSort
+EXPORTS InsertionSort
+EXPORTS ShellSort
+EXPORTS BogoSort
 ; --------------------------------------
