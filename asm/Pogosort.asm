@@ -7,6 +7,9 @@
 
 .DATA
 
+extern malloc: proc
+extern free: proc
+
 Divisor DWORD 13897
 Term DWORD 9521
 MaxIterations DWORD 1000000
@@ -261,7 +264,255 @@ ShellSort endp
 
 ; --- Linear Sorting Algorithms --- ;
 
+; Counting Sort
+; Counting Sort is a simple linear algorithm which uses a secondary array to sort the input. It only goes through the array once.
+; As the name suggests, it counts the elements in input array, and stores the counts in second array.
+; Then, it recreates the array using the stored counts - that will be the output.
+; It is NOT a comparison sort. It requires some additional memory - the bigger values in input array, the more memory.
+; Worst complexity: n + r, where r - range of key values
+; Average complexity: n + r, where r - range of key values
+CountingSort proc
+
+; RCX - pointer to input array
+; RDX - array size
+
+; Preserve original parameters
+mov R14, RCX
+mov R15, RDX
+
+; Allocate an array of 101 elements of 4 bytes each (our input data is in range of 1-100)
+mov RCX, 404
+
+;! Important - need to sub 32 from RSP before each CALL, and add 32 right after
+; This is due to Windows x64 shallow space - functions can step on the 32 bytes above their return address
+; Without doing this, we would get an access violation upon returning from the function
+sub RSP, 32
+
+call malloc	; Pointer to new array is in RAX
+
+add RSP, 32
+
+xor R10, R10	; Temporary iterator
+
+; Set all values in array to 0
+CountingSort_PrepLoop:
+
+	mov dword ptr [RAX + 4 * R10], 0
+
+	inc R10
+
+	cmp R10, 101
+	jl CountingSort_PrepLoop
+
+; Count items in array
+; The value is the index in created array
+
+xor R10, R10	; i
+
+CountingSort_FirstLoop:
+
+	mov R11D, dword ptr [R14 + 4 * R10]	; arr[i]
+
+	mov R12D, dword ptr [RAX + 4 * R11]	; counts[arr[i]]
+	inc R12D	; ++
+	mov [RAX + 4 * R11], R12D	; move back to array
+
+CountingSort_FirstLoopIter:
+
+	inc R10
+
+	cmp R10, R15
+
+	jl CountingSort_FirstLoop
+
+	xor R10, R10	; i	- input array index
+	xor R11, R11	; j - counts array index
+
+CountingSort_SecondLoop:
+
+	mov R12D, dword ptr [RAX + 4 * R11]	; value at counts[j]
+
+	; if counts[j] = 0, skip to next iteration already
+
+	cmp R12D, 0
+	je CountingSort_SecondLoopIter
+
+	; Insert (j) value counts[j] times (eg.: if j=1, counts[j] = 3, insert the value 1 three times)
+
+CountingSort_SecondLoop_InnerLoop:
+	
+	mov [R14 + 4 * R10], R11D	; arr[i] = j
+	inc R10	; i++
+
+CountingSort_SecondLoop_InnerLoopIter:
+
+	dec R12D
+
+	cmp R12D, 0
+	jne CountingSort_SecondLoop_InnerLoop
+
+CountingSort_SecondLoopIter:
+
+	inc R11
+
+	cmp R11, 101
+	jl CountingSort_SecondLoop
+
+CountingSort_AlgorithmEnd:
+
+	; Free the allocated array at the end of algorithm
+	mov RCX, RAX
+
+	sub RSP, 32
+
+	call free
+
+	add RSP, 32
+
+	mov RAX, R14
+	ret
+
+CountingSort endp
+
+; Radix Sort
+; Quite similar to Counting Sort, but performs several iterations on the data.
+; Each iteration, the input array is sorted by one digit. After going through all digits, the array is sorted.
+; Because of the nature of Counting Sort (requires a second array of size based on values in array), Radix Sort will perform better if input
+; values are much larger (and diverse) than the array size.
+; Worst complexity: n * k, where k - max number of digits in values
+; Average complexity: n * k, where k - max number of digits in values
+RadixSort proc
+
+; RCX - pointer to input array
+; RDX - array size
+
+; Preserve original parameters
+mov R14, RCX
+mov R15, RDX
+
+; Allocate an array of 10 elements of 4 bytes each (one for each digit, 0-9)
+mov RCX, 40
+
+;! Important - need to sub 32 from RSP before each CALL, and add 32 right after
+; This is due to Windows x64 shallow space - functions can step on the 32 bytes above their return address
+; Without doing this, we would get an access violation upon returning from the function
+sub RSP, 32
+
+call malloc	; Pointer to new array is in RAX
+
+add RSP, 32
+
+xor R8, R8	; i
+
+; Set all values in array to 0
+RadixSort_PrepLoop:
+
+	mov dword ptr [RAX + 4 * R8], 0
+
+	inc R8
+
+	cmp R8, 10
+	jl RadixSort_PrepLoop
+
+; TODO
+
+RadixSort endp
+
 ; --- Esoteric Sorting Algorithms --- ;
+
+; Dictator Sort
+; An esoteric sorting algorithm, in which all elements not in order are removed from the array.
+; Source: https://github.com/gustavo-depaula/stalin-sort
+; Average complexity: n
+; Warning: array may (will) be changed in process
+DictatorSort proc
+
+; RCX - pointer to input array
+; RDX - array size
+
+xor R8, R8	; i
+
+xor R9, R9	; max value
+
+xor R15, R15	; count
+
+DictatorSort_Loop:
+
+	mov R10D, dword ptr [RCX + 4 * R8]	; temp value
+
+	cmp R10D, R9D
+
+	jge DictatorSort_Loop_GreaterEqual
+
+	jmp DictatorSort_Loop_Less
+
+; Keep the element in the array, replace max value
+DictatorSort_Loop_GreaterEqual:
+
+	mov R9D, R10D
+	inc R15		; count++
+
+	jmp DictatorSort_LoopIter
+
+; Remove the element from the array (for now set to 0)
+DictatorSort_Loop_Less:
+
+	mov dword ptr [RCX + 4 * R8], 0
+
+DictatorSort_LoopIter:
+	
+	inc R8
+
+	cmp R8D, EDX
+	jl DictatorSort_Loop
+
+DictatorSort_AlgorithmEnd:
+
+	; Recreate the array - size equal to the count above + 1 (we'll put a zero at the end so that we can know how large the array is)
+
+	mov R13, RCX	; original array
+	mov R14, RDX	; n
+
+	mov RCX, R15
+	inc RCX
+	shl RCX, 2	; amount of bytes to allocate: 4 * (count + 1)
+
+	sub RSP, 32
+
+	call malloc
+
+	add RSP, 32
+	
+	xor R8, R8	; original array index
+	xor R9, R9	; second array index
+
+DictatorSort_OutputLoop:
+
+	mov R10D, dword ptr [R13 + 4 * R8]
+
+	cmp R10D, 0
+	je DictatorSort_OutputLoopIter
+
+	mov [RAX + 4 * R9], R10D
+	inc R9
+
+DictatorSort_OutputLoopIter:
+
+	inc R8
+
+	cmp R8, R14
+	jl DictatorSort_OutputLoop
+
+DictatorSort_AlgorithmRet:
+
+	; Add zero to the end of the output array
+	mov dword ptr [RAX + 4 * R9], 0
+
+	mov RAX, RAX
+	ret
+
+DictatorSort endp
+
 
 ; Bogo Sort
 ; An esoteric sorting algorithm which orders items in an array (pseudo-)randomly.

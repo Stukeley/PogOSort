@@ -6,7 +6,7 @@
 #include "../headers/IsSorted.h"
 
 #define N 100
-#define FCOUNT 3
+#define FCOUNT 4
 
 int main() 
 {
@@ -18,6 +18,7 @@ int main()
     sorts[0] = BubbleSort;
     sorts[1] = InsertionSort;
     sorts[2] = SelectionSort;
+    sorts[3] = CountingSort;
 
     for (int i =0;i<FCOUNT;i++)
     {
@@ -36,6 +37,26 @@ int main()
         printf("\n\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
         
         free(copy);
+    }
+
+    // Dictator Sort is separate as it has a return value
+    {
+        int32_t* copy = malloc(N * sizeof(int32_t));
+
+        memcpy(copy, arr, N * sizeof(int32_t));
+
+        PrintArray(copy, N);
+
+        int32_t* outputArray = DictatorSort(copy, N);
+
+        int32_t size = PrintArrayOfUnspecifiedSize(outputArray);
+
+        bool isArraySorted = IsSorted(outputArray, size);
+
+        printf("\n\nIsArraySorted (Dictator Sort): %s\n\n", isArraySorted ? "true" : "false");
+
+        free(copy);
+        free(outputArray);
     }
 
     free(arr);

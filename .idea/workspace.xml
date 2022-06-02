@@ -12,12 +12,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0a0592fb-6193-416d-9785-506d2217d14b" name="Changes" comment="Add .gitignore.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="0a0592fb-6193-416d-9785-506d2217d14b" name="Changes" comment="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asm/Pogosort.asm" beforeDir="false" afterPath="$PROJECT_DIR$/asm/Pogosort.asm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asm/Pogosort.def" beforeDir="false" afterPath="$PROJECT_DIR$/asm/Pogosort.def" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/c/headers/PrintArray.h" beforeDir="false" afterPath="$PROJECT_DIR$/c/headers/PrintArray.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/c/headers/extern.h" beforeDir="false" afterPath="$PROJECT_DIR$/c/headers/extern.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/c/sources/PrintArray.c" beforeDir="false" afterPath="$PROJECT_DIR$/c/sources/PrintArray.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/c/sources/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/c/sources/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,9 +59,9 @@
   }
 }</component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -73,7 +74,8 @@
       <option name="presentableId" value="Default" />
       <updated>1653935707262</updated>
       <workItem from="1653935711367" duration="927000" />
-      <workItem from="1654184805391" duration="47000" />
+      <workItem from="1654184805391" duration="170000" />
+      <workItem from="1654201909803" duration="43000" />
     </task>
     <task id="LOCAL-00001" summary="Add .gitignore.">
       <created>1653936014863</created>
@@ -82,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653936014863</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore.">
+      <created>1654184964391</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1654184964391</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -101,6 +110,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add .gitignore." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add .gitignore." />
+    <MESSAGE value="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore." />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore." />
   </component>
 </project>
