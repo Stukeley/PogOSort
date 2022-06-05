@@ -232,18 +232,65 @@ ShellSort_PrepLoop:
 
 ShellSort_OuterLoop:
 	lea R8, GapSequence
-	mov R14D, dword ptr [R8 + 4 * R15]	; R14D - current gap value
+	mov R14D, dword ptr [R8 + 4 * R15]	; R14D - gap value
 
-	mov R9D, R14D	; i = gap
+	xor R9D, R9D	; R9D - i
 
 ShellSort_InnerLoop: 
 	
+	mov R10D, R9D	; R10D - j = i
+	mov R11D, dword ptr [RCX + 4 * R9]	; R11D - arr[i] - tempValue
+
+	; if (j >= gap) && (arr[j - gap] > tempValue), get in the loop
+
+	cmp R10D, R14D	; j >= gap
+	jl ShellSort_InnerLoopIter
+
+	mov EAX, R10D
+	sub EAX, R14D
+
+	mov R12D, dword ptr [RCX + 4 * RAX]	; arr[j - gap]
+
+	cmp R12D, R11D
+	jle ShellSort_InnerLoopIter
 
 ShellSort_SecondInnerLoop:
 
+	; arr[j] = arr[j - gap]
+	mov EAX, R10D
+
+	mov R13D, dword ptr [RCX + 4 * RAX] ; R13D = arr[j]
+
+	mov EAX, R10D
+	sub EAX, R14D
+
+	mov R12D, dword ptr [RCX + 4 * RAX]	; R14D = arr[j - gap]
+
+	; swap
+	mov [RCX + 4 * RAX], R13D
+	mov [RCX + 4 * RAX], R12D
+
+	; j = j - gap
+	sub R10D, R14D
+
 ShellSort_SecondInnerLoopIter:
 
+	; if not (j >= gap) && (arr[j - gap] > tempValue), break out of this loop
+
+	cmp R10D, R14D	; j >= gap
+	jl ShellSort_InnerLoopIter
+
+	mov R12D, dword ptr [RCX + 4 * RAX]	; arr[j - gap]
+
+	cmp R12D, R11D
+	jle ShellSort_InnerLoopIter
+
+	jmp ShellSort_SecondInnerLoop
+
 ShellSort_InnerLoopIter:
+
+	; arr[j] = tempValue;
+	mov [RCX + 4 * R10], R11D
 
 ShellSort_OuterLoopIter:
 	inc R15D
@@ -254,13 +301,21 @@ ShellSort_OuterLoopIter:
 	jmp ShellSort_OuterLoop
 
 ShellSort_AlgorithmEnd:
-	mov RCX, RAX
+	mov RAX, RCX
 	ret
 
 
 ShellSort endp
 
 ; --- Logarithmic Sorting Algorithms --- ;
+
+MergeSort proc
+
+MergeSort endp
+
+QuickSort proc
+
+QuickSort endp
 
 ; --- Linear Sorting Algorithms --- ;
 
@@ -592,8 +647,8 @@ BogoSort_NotSorted:
 
 BogoSort_Sorted:
 
-	; array is sorted (or maximum number of iterations reached) - return
-	mov RAX, R14
+	; array is sorted (or maximum number of iterations reached) - return the number of iterations
+	mov RAX, R13
 	ret
 
 BogoSort endp

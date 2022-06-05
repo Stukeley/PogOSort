@@ -6,7 +6,7 @@
 #include "../headers/IsSorted.h"
 
 #define N 100
-#define FCOUNT 4
+#define FCOUNT 5
 
 int main() 
 {
@@ -19,6 +19,7 @@ int main()
     sorts[1] = InsertionSort;
     sorts[2] = SelectionSort;
     sorts[3] = CountingSort;
+    sorts[4] = ShellSort;
 
     for (int i =0;i<FCOUNT;i++)
     {
@@ -47,13 +48,14 @@ int main()
 
         PrintArray(smallArray, n);
 
-        BogoSort(smallArray, n);
+        int iterations = BogoSort(smallArray, n);
 
         PrintArray(smallArray, n);
 
         bool isArraySorted = IsSorted(smallArray, n);
 
-        printf("\n\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+        printf("\n\nIsArraySorted (Bogo Sort): %s\n\n", isArraySorted ? "true" : "false");
+        printf("Bogo Sort took: %i iterations\n\n", iterations);
 
         free(smallArray);
     }
