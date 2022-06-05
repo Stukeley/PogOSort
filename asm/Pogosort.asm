@@ -12,7 +12,7 @@ extern free: proc
 
 Divisor DWORD 13897
 Term DWORD 9521
-MaxIterations DWORD 1000000
+MaxIterations DWORD 100000
 BytesPerInt DWORD 4
 
 GapSequence DWORD 1750, 701, 301, 132, 57, 23, 10, 4, 1
@@ -518,24 +518,83 @@ DictatorSort endp
 ; An esoteric sorting algorithm which orders items in an array (pseudo-)randomly.
 ; There is no guarantee the algorithm will always succeed.
 ; There is a maximum number of iterations this procedure will perform, after which the result will be returned no matter what.
+; Uses the Sattolo's algorithm for shuffling array.
 ; Worst complexity: infinite
 ; Average complexity: (n+1)!
 ; Best complexity: n
 BogoSort proc
 
+xor R13, R13	; Number of iterations of algorithm - maximum number is defined in .data
+
 ; RCX - pointer to array
 ; RDX - number of elements in array
+BogoSort_AlgorithmStart:
 
-push RCX
-push RDX
+	mov R14, RCX	; R14 - pointer to array
+	mov R15, RDX	; R15 - array length
 
-; Saves low 32 bits of timestamp counter to EAX - we'll use that as random seed
-RDTSCP
+	; Saves low 32 bits of timestamp counter to EAX - we'll use that as random seed
+	RDTSCP
 
-pop RCX
-pop RDX
+	; i = n <- R10
+	mov R10, R15
 
-; TODO - wymyslic shuffle algorithm
+BogoSort_Loop:
+
+	; 1. i = i - 1
+	; 2. j - randomize a number - range <0; i-1> (i = length)
+	; randomize - divide the pseudo-random number returned by RDTSCP (seed) by (i) and take the remainder (it will be in range of 0 - i-1)
+	; 3. swap i-th item with j-th item
+	; 4. repeat while i > 1
+
+	dec R10
+
+	; pseudo-random value is in RAX
+	mov RDX, 0	; we divide RDX:RAX compound register, so let's make RDX 0
+	div R10
+
+	; remainder stored in RDX
+
+	; swap elements at [RDX] and [R10]
+	mov R11D, dword ptr [R14 + 4 * RDX]
+	mov R12D, dword ptr [R14 + 4 * R10]
+
+	mov [R14 + 4 * RDX], R12D
+	mov [R14 + 4 * R10], R11D
+
+BogoSort_LoopIter:
+
+	; loop until i <= 1
+
+	cmp R10, 1
+	jg BogoSort_Loop
+
+BogoSort_AlgorithmEnd:
+
+	; check if array is sorted
+	mov RCX, R14
+	mov RDX, R15
+	call IsSortedAsm
+
+	cmp RAX, 1
+	je BogoSort_Sorted
+	
+BogoSort_NotSorted:
+
+	; increment number of iterations, stored in R13
+	inc R13D
+	
+	; check if we reached the maximum number of iterations - MaxIterations
+	cmp R13D, MaxIterations
+
+	; if not, go back to the start
+	jl BogoSort_AlgorithmStart
+
+BogoSort_Sorted:
+
+	; array is sorted (or maximum number of iterations reached) - return
+	mov RAX, R14
+	ret
 
 BogoSort endp
 

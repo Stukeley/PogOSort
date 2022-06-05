@@ -12,15 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0a0592fb-6193-416d-9785-506d2217d14b" name="Changes" comment="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asm/Pogosort.asm" beforeDir="false" afterPath="$PROJECT_DIR$/asm/Pogosort.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asm/Pogosort.def" beforeDir="false" afterPath="$PROJECT_DIR$/asm/Pogosort.def" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/c/headers/PrintArray.h" beforeDir="false" afterPath="$PROJECT_DIR$/c/headers/PrintArray.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/c/headers/extern.h" beforeDir="false" afterPath="$PROJECT_DIR$/c/headers/extern.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/c/sources/PrintArray.c" beforeDir="false" afterPath="$PROJECT_DIR$/c/sources/PrintArray.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/c/sources/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/c/sources/main.c" afterDir="false" />
-    </list>
+    <list default="true" id="0a0592fb-6193-416d-9785-506d2217d14b" name="Changes" comment="Add Counting Sort (with array being allocated and freed directly in ASM). Add esoteric Dictator Sort. Add a method for printing arrays of unspecified size." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,7 +67,7 @@
       <updated>1653935707262</updated>
       <workItem from="1653935711367" duration="927000" />
       <workItem from="1654184805391" duration="170000" />
-      <workItem from="1654201909803" duration="43000" />
+      <workItem from="1654201909803" duration="91000" />
     </task>
     <task id="LOCAL-00001" summary="Add .gitignore.">
       <created>1653936014863</created>
@@ -91,7 +83,14 @@
       <option name="project" value="LOCAL" />
       <updated>1654184964391</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Add Counting Sort (with array being allocated and freed directly in ASM). Add esoteric Dictator Sort. Add a method for printing arrays of unspecified size.">
+      <created>1654201991642</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1654201991642</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -111,6 +110,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add .gitignore." />
     <MESSAGE value="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement Selection and Insertion sort. Start implementing Shell and Bogo sort. Create a system for easy invocation of sorting algorithms, and fix an issue with memory copying. Update .gitignore." />
+    <MESSAGE value="Add Counting Sort (with array being allocated and freed directly in ASM). Add esoteric Dictator Sort. Add a method for printing arrays of unspecified size." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Counting Sort (with array being allocated and freed directly in ASM). Add esoteric Dictator Sort. Add a method for printing arrays of unspecified size." />
   </component>
 </project>

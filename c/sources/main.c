@@ -39,6 +39,25 @@ int main()
         free(copy);
     }
 
+    // Bogo Sort is separate as it's very unlikely to succeed on larger data.
+    {
+        int n = 6;
+
+        int32_t* smallArray = GenerateArray(n);
+
+        PrintArray(smallArray, n);
+
+        BogoSort(smallArray, n);
+
+        PrintArray(smallArray, n);
+
+        bool isArraySorted = IsSorted(smallArray, n);
+
+        printf("\n\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+
+        free(smallArray);
+    }
+
     // Dictator Sort is separate as it has a return value
     {
         int32_t* copy = malloc(N * sizeof(int32_t));
