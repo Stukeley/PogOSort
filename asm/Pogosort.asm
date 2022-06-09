@@ -847,35 +847,274 @@ RadixSort proc
 ; RCX - pointer to input array
 ; RDX - array size
 
-; Preserve original parameters
-mov R14, RCX
-mov R15, RDX
+; First, create a temporary array that will contain the values sorted by given digit (in each loop iteration)
+push RCX
+push RDX
 
-; Allocate an array of 10 elements of 4 bytes each (one for each digit, 0-9)
-mov RCX, 40
+mov RCX, RDX
+shl RCX, 2	; Allocate 4 bytes per element
 
-;! Important - need to sub 32 from RSP before each CALL, and add 32 right after
-; This is due to Windows x64 shallow space - functions can step on the 32 bytes above their return address
-; Without doing this, we would get an access violation upon returning from the function
 sub RSP, 32
-
-call malloc	; Pointer to new array is in RAX
-
+call malloc
 add RSP, 32
 
-xor R8, R8	; i
+; Pointer to temporary array in R15
+mov R15, RAX
 
-; Set all values in array to 0
+pop RDX
+pop RCX
+
+; R13 - exp = initially 1
+mov R13, 1
+
+; Get max element of array
+
+; R14 - max element = initially arr[0]
+mov R14D, dword ptr [RCX]
+
+; R8 - i
+mov R8, 1
+
+RadixSort_PrepLoopHead:
+
+	cmp R8, RDX
+	jge RadixSort_OuterLoopHead
+
 RadixSort_PrepLoop:
 
-	mov dword ptr [RAX + 4 * R8], 0
+	mov EAX, dword ptr [RCX + 4 * R8]
 
 	inc R8
 
-	cmp R8, 10
-	jl RadixSort_PrepLoop
+	cmp EAX, R14D
+	jle RadixSort_PrepLoopHead
 
-; TODO
+	mov R14D, EAX
+	jmp RadixSort_PrepLoopHead
+
+RadixSort_OuterLoopHead:
+
+	; while (max / exp > 0)
+	
+	push RDX
+	push RCX
+
+	mov RDX, 0
+	mov RAX, R14
+	mov RBX, R13
+
+	div RBX
+
+	pop RCX
+	pop RDX
+
+	cmp RAX, 0
+	jle RadixSort_AlgorithmEnd
+
+	; Allocate an array of 10 elements ("buckets")
+	push RCX
+	push RDX
+
+	mov RCX, 40
+
+	sub RSP, 32
+	call malloc
+	add RSP, 32
+
+	pop RDX
+	pop RCX
+
+	; R12 - "buckets" array
+	mov R12, RAX
+
+	; R8 - i
+	xor R8, R8
+
+	; Set all values in "buckets" array to 0
+
+RadixSort_BucketsZeroLoopHead:
+
+	cmp R8, 10
+	jl RadixSort_BucketsZeroLoop
+
+	; R8 - i
+	xor R8, R8
+
+	jmp RadixSort_FirstInnerLoopHead
+
+RadixSort_BucketsZeroLoop:
+
+	mov dword ptr [R12 + 4 * R8], 0
+
+	inc R8
+	jmp RadixSort_BucketsZeroLoopHead
+
+RadixSort_FirstInnerLoopHead:
+
+	cmp R8, RDX
+	jl RadixSort_FirstInnerLoop
+
+	mov R8, 1
+	jmp RadixSort_SecondInnerLoopHead
+	
+RadixSort_FirstInnerLoop:
+
+	push RCX
+	push RDX
+
+	; arr[i]
+	mov EAX, dword ptr [RCX + 4 * R8]
+	mov RDX, 0
+
+	mov RBX, R13
+
+	div RBX
+
+	mov RDX, 0
+	mov RBX, 10
+	
+	div RBX
+
+	; remainder in RDX
+
+	; bucket[(arr[i] / exp) % 10]++;
+	inc dword ptr [R12 + 4 * RDX]
+
+	pop RDX
+	pop RCX
+
+	inc R8
+
+	jmp RadixSort_FirstInnerLoopHead
+
+RadixSort_SecondInnerLoopHead:
+
+	cmp R8, 10
+	jl RadixSort_SecondInnerLoop
+
+	mov R8, RDX
+	dec R8
+	jmp RadixSort_ThirdInnerLoopHead
+
+RadixSort_SecondInnerLoop:
+	
+	mov RBX, R8
+	dec RBX
+	mov EAX, dword ptr [R12 + 4 * RBX]
+
+	add dword ptr [R12 + 4 * R8], EAX
+
+	inc R8
+
+	jmp RadixSort_SecondInnerLoopHead
+
+RadixSort_ThirdInnerLoopHead:
+	
+	cmp R8, 0
+	jge RadixSort_ThirdInnerLoop
+
+	xor R8, R8
+	jmp RadixSort_FourthInnerLoopHead
+
+RadixSort_ThirdInnerLoop:
+
+	push RCX
+	push RDX
+
+	; arr[i]
+	mov EAX, dword ptr [RCX + 4 * R8]
+	mov RDX, 0
+
+	mov RBX, R13
+
+	div RBX
+
+	mov RDX, 0
+	mov RBX, 10
+	
+	div RBX
+
+	; remainder in RDX
+	; RDX = (arr[i] / exp) % 10
+
+	mov R9, RDX
+
+	pop RDX
+	pop RCX
+
+	; EAX = bucket[bucketIndex] - 1
+	mov EAX, dword ptr [R12 + 4 * R9]
+	dec EAX
+
+	; R10D = arr[i]
+	mov R10D, dword ptr [RCX + 4 * R8]
+
+	; output[bucket[bucketIndex] - 1] = arr[i];
+	mov [R15 + 4 * RAX], R10D
+
+	; bucket[bucketIndex]--;
+	dec dword ptr [R12 + 4 * R9]
+
+	dec R8
+
+	jmp RadixSort_ThirdInnerLoopHead
+
+RadixSort_FourthInnerLoopHead:
+
+	cmp R8, RDX
+	jg RadixSort_OuterLoopIter
+
+RadixSort_FourthInnerLoop:
+
+	; arr[i] = output[i]
+	
+	mov R9D, dword ptr [R15 + 4 * R8]
+	mov [RCX + 4 * R8], R9D
+
+	inc R8
+	jmp RadixSort_FourthInnerLoopHead
+
+RadixSort_OuterLoopIter:
+
+	push RCX
+	push RDX
+
+	; exp = exp * 10
+	mov RDX, 0
+	mov RAX, R13
+	mov RBX, 10
+
+	mul RBX
+
+	mov R13, RAX
+
+	; free "buckets" array (R12)
+
+	mov RCX, R12
+
+	sub RSP, 32
+	call free
+	add RSP, 32
+
+	pop RDX
+	pop RCX
+
+	jmp RadixSort_OuterLoopHead
+
+RadixSort_AlgorithmEnd:
+
+	; free temp array
+	push RCX
+
+	mov RCX, R15
+
+	sub RSP, 32
+	call free
+	add RSP, 32
+
+	pop RCX
+
+	ret
 
 RadixSort endp
 

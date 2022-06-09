@@ -6,7 +6,7 @@
 #include "../headers/IsSorted.h"
 
 #define N 10
-#define FCOUNT 5
+#define FCOUNT 6
 
 int main() 
 {
@@ -20,6 +20,7 @@ int main()
     sorts[2] = SelectionSort;
     sorts[3] = CountingSort;
     sorts[4] = ShellSort;
+    sorts[5] = RadixSort;
 
     for (int i =0;i<FCOUNT;i++)
     {
@@ -45,6 +46,10 @@ int main()
 
             case 4:
                 sortName = "Shell Sort";
+                break;
+
+            case 5:
+                sortName = "Radix Sort";
                 break;
 
             default:
