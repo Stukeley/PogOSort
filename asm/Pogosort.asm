@@ -385,7 +385,7 @@ MergeSort_AlgorithmEnd:
 MergeSort endp
 
 ; Merge Array
-; Helper procedure used in Merge Sort
+; Helper procedure used in Merge Sort.
 ; While the MergeSort procedure recursively divides the arrays into smaller ones, the MergeArray procedure is called on each subarray that has one element.
 ; It produces an array that is sorted.
 MergeArray proc
@@ -599,9 +599,126 @@ MergeArray_ProcedureEnd:
 MergeArray endp
 
 
+; Quick Sort
+; Similarly to Merge Sort, Quick Sort is based on "Divide and Conquer".
+; One of the most commonly used, recursive algorithms for sorting. Each time, it selects a pivot element and creates two subarrays
+; one with elements less than the pivot, one with elements greater than the pivot. Then, the process is repeated for each of these subarrays, until the entire array
+; is sorted (an array with one element is always sorted).
+; This implementation will use the right-most element as pivot in each call.
+; Worst complexity: n^2 (when pivot is chosen each time so that the array is split into two arrays of size (1) and (n-1))
+; Average complexity: n logn
 QuickSort proc
 
+; Expects three parameters:
+; RCX - array pointer
+; RDX - left
+; R8 - right
+
+cmp RDX, R8
+jg QuickSort_AlgorithmEnd
+
+; Since Partition expects the same parameters as QuickSort, no need to reorder anything
+call Partition
+
+; pivot index in RAX
+push RAX
+push RDX
+push R8
+
+dec RAX
+mov R8, RAX
+
+call QuickSort
+
+pop R8
+pop RDX
+pop RAX
+
+inc RAX
+mov RDX, RAX
+
+call QuickSort
+
+QuickSort_AlgorithmEnd:
+	ret
+
 QuickSort endp
+
+; Partition
+; Helper procedure used in Quick Sort.
+; The procedure picks a pivot point (right-most element), then creates subarrays based on the pivot.
+; Smaller elements will be moved to the left-side subarray, while larger elements - to the right-side subarray.
+; Returns the pivot point index (in RAX).
+Partition proc
+
+; Expects three parameters:
+; RCX - array pointer
+; RDX - left
+; R8 - right
+
+; R15 - pivot point value = arr[right]
+mov R15D, dword ptr [RCX + 4 * R8]
+
+; R9 - i = left - 1
+mov R9, RDX
+dec R9
+
+; R10 - j
+mov R10, RDX
+
+Partition_LoopHead:
+
+	; for (int j = left; j < right; j++)
+
+	cmp R10, R8
+	jge Partition_ProcedureEnd
+
+
+Partition_Loop:
+
+	; EAX - arr[j]
+	mov EAX, dword ptr [RCX + 4 * R10]
+
+	; if (arr[j] <= pivot)
+	cmp EAX, R15D
+	jg Partition_LoopIter
+
+	inc R9
+
+	; R11D = arr[i]
+	mov R11D, dword ptr [RCX + 4 * R9]
+
+	; R12D = arr[j]
+	mov R12D, dword ptr [RCX + 4 * R10]
+
+	; swap
+	mov [RCX + 4 * R9], R12D
+	mov [RCX + 4 * R10], R11D
+
+Partition_LoopIter:
+	inc R10
+
+	jmp Partition_LoopHead
+
+Partition_ProcedureEnd:
+
+	; Swap once more
+	inc R9
+
+	; R11D = arr[++i]
+	mov R11D, dword ptr [RCX + 4 * R9]
+
+	; R12D = arr[right]
+	mov R12D, dword ptr [RCX + 4 * R8]
+
+	mov [RCX + 4 * R9], R12D
+	mov [RCX + 4 * R8], R11D
+
+	mov RAX, R9
+
+	ret
+
+Partition endp
 
 
 ; --- Linear Sorting Algorithms --- ;

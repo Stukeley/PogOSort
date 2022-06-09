@@ -102,6 +102,32 @@ int main()
         free(copy);
     }
 
+    // QuickSort is separate as it takes more parameters.
+    {
+        printf("Sorting Algorithm: Quick Sort\n\n");
+
+        int32_t* copy = malloc(N * sizeof(int32_t));
+        memcpy(copy, arr, N * sizeof(int32_t));
+
+        printf("Before:\n");
+
+        PrintArray(copy, N);
+
+        printf("\nAfter:\n");
+
+        QuickSort(copy, 0, N - 1);
+
+        PrintArray(copy, N);
+
+        bool isArraySorted = IsSorted(copy, N);
+
+        printf("\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+
+        printf("---------------------\n\n");
+
+        free(copy);
+    }
+
     // Bogo Sort is separate as it's very unlikely to succeed on larger data.
     {
         printf("Sorting Algorithm: Bogo Sort\n\n");
