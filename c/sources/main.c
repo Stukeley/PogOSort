@@ -55,7 +55,6 @@ int main()
         printf("Sorting Algorithm: %s\n\n", sortName);
 
         int32_t* copy = malloc(N * sizeof(int32_t));
-
         memcpy(copy, arr, N * sizeof(int32_t));
 
         printf("Before:\n");
@@ -77,8 +76,36 @@ int main()
         free(copy);
     }
 
+    // Merge Sort is separate as it takes more parameters.
+    {
+        printf("Sorting Algorithm: Merge Sort\n\n");
+
+        int32_t* copy = malloc(N * sizeof(int32_t));
+        memcpy(copy, arr, N * sizeof(int32_t));
+
+        printf("Before:\n");
+
+        PrintArray(copy, N);
+
+        printf("\nAfter:\n");
+
+        MergeSort(copy, 0, N - 1);
+
+        PrintArray(copy, N);
+
+        bool isArraySorted = IsSorted(copy, N);
+
+        printf("\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+
+        printf("---------------------\n\n");
+
+        free(copy);
+    }
+
     // Bogo Sort is separate as it's very unlikely to succeed on larger data.
     {
+        printf("Sorting Algorithm: Bogo Sort\n\n");
+
         int n = 6;
 
         int32_t* smallArray = GenerateArray(n);
@@ -91,16 +118,19 @@ int main()
 
         bool isArraySorted = IsSorted(smallArray, n);
 
-        printf("\n\nIsArraySorted (Bogo Sort): %s\n\n", isArraySorted ? "true" : "false");
+        printf("\n\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
         printf("Bogo Sort took: %i iterations\n\n", iterations);
+
+        printf("---------------------\n\n");
 
         free(smallArray);
     }
 
     // Dictator Sort is separate as it has a return value (newly created array).
     {
-        int32_t* copy = malloc(N * sizeof(int32_t));
+        printf("Sorting Algorithm: Dictator Sort\n\n");
 
+        int32_t* copy = malloc(N * sizeof(int32_t));
         memcpy(copy, arr, N * sizeof(int32_t));
 
         PrintArray(copy, N);
@@ -109,9 +139,12 @@ int main()
 
         int32_t size = PrintArrayOfUnspecifiedSize(outputArray);
 
-        bool isArraySorted = IsSorted(outputArray, size);
+        bool isArraySorted = IsSorted(outputArray, size - 1);
 
-        printf("\n\nIsArraySorted (Dictator Sort): %s\n\n", isArraySorted ? "true" : "false");
+        printf("\n\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+        printf("Output array size: %i\n\n", size);
+
+        printf("---------------------\n\n");
 
         free(copy);
         free(outputArray);

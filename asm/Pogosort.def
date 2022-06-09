@@ -6,6 +6,7 @@ EXPORTS SelectionSort
 EXPORTS InsertionSort
 EXPORTS ShellSort
 EXPORTS CountingSort
+EXPORTS MergeSort
 EXPORTS DictatorSort
 EXPORTS BogoSort
 ; --------------------------------------

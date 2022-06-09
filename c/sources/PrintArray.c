@@ -25,5 +25,5 @@ int32_t PrintArrayOfUnspecifiedSize(int32_t* arr)
 
     printf("\n");
 
-    return i - 1;
+    return i;
 }

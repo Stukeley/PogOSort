@@ -12,6 +12,7 @@ extern void SelectionSort(int32_t* arr, int32_t n);
 extern void InsertionSort(int32_t* arr, int32_t n);
 extern void ShellSort(int32_t* arr, int32_t n);
 extern void CountingSort(int32_t* arr, int32_t n);
+extern void MergeSort(int32_t* arr, int32_t left, int32_t right);
 extern int32_t* DictatorSort(int32_t* arr, int32_t n);
 extern int32_t BogoSort(int32_t* arr, int32_t n);
 

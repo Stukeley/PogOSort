@@ -310,10 +310,289 @@ ShellSort endp
 
 ; --- Logarithmic Sorting Algorithms --- ;
 
-
+; Merge Sort
+; An efficient comparison-based sort based on the "Divide and Conquer" principle.
+; The algorithm divides input array into multiple subarrays until the subarrays contain only one element.
+; Since an array with one element is sorted, after dividing we only need to merge the arrays. When we end up with a single, merged array, it will be sorted.
+; Worst complexity: n logn
+; Average complexity: n logn
 MergeSort proc
 
+; Three parameters expected:
+; RCX - array pointer
+; RDX - index of leftmost element of subarray; initially 0
+; R8 - index of rightmost elemnent of subarray; initially (size - 1)
+
+; if left < right
+cmp RDX, R8
+jge MergeSort_AlgorithmEnd
+
+; calculate middle = left + (right - left) / 2
+
+mov RAX, R8
+sub RAX, RDX
+
+push RDX
+mov RDX, 0	; upper bytes of compound register RDX:RAX that is being divided
+
+mov RBX, 2
+
+div RBX
+
+pop RDX
+
+add RAX, RDX	; RAX - middle
+
+push RAX
+push RDX
+push R8
+
+; call MergeSort twice
+
+;MergeSort(arr, left, middle)
+
+mov R8, RAX
+
+call MergeSort
+
+; MergeSort(arr, middle+1, right)
+
+pop R8
+pop RDX
+pop RAX
+push RAX
+push RDX
+push R8
+
+mov RDX, RAX
+inc RDX
+
+call MergeSort
+
+pop R8
+pop RDX
+pop RAX
+
+; reorder parameters to fit MergeArray expectations
+mov R9, R8
+mov R8, RAX
+
+call MergeArray
+
+MergeSort_AlgorithmEnd:
+	ret
+
 MergeSort endp
+
+; Merge Array
+; Helper procedure used in Merge Sort
+; While the MergeSort procedure recursively divides the arrays into smaller ones, the MergeArray procedure is called on each subarray that has one element.
+; It produces an array that is sorted.
+MergeArray proc
+
+; Expects four parameters:
+; RCX - pointer to array
+; RDX - left
+; R8 - middle
+; R9 - right
+
+; Calculate subarray sizes
+
+; leftArrayLength in R14
+mov R14, R8
+sub R14, RDX
+inc R14
+
+; rightArrayLength in R15
+mov R15, R9
+sub R15, R8
+
+; Create two temporary arrays
+push RCX
+push RDX
+
+mov RCX, R14
+shl RCX, 2	; multiply amount to allocate by 4 [in bytes]
+
+sub RSP, 32
+call malloc
+add RSP, 32
+
+mov R12, RAX	; R12 - pointer to left temporary array
+
+mov RCX, R15
+shl RCX, 2	; multiply amount to allocate by 4 [in bytes]
+
+sub RSP, 32
+call malloc
+add RSP, 32
+
+mov R13, RAX	; R13 - pointer to right temporary array
+
+pop RDX
+pop RCX
+
+xor RAX, RAX
+
+; Copy elements from input array to left temporary array
+MergeArray_LeftTempArrayLoopHead:
+	
+	cmp RAX, R14
+	jge MergeArray_LeftTempArrayLoopEnd
+
+MergeArray_LeftTempArrayLoop:
+	
+	; arr[left + i]
+	mov R11, RDX
+	add R11, RAX
+
+	mov R10D, dword ptr [RCX + 4 * R11]
+
+	; leftTempArray[i] = arr[left + i]
+	mov [R12 + 4 * RAX], R10D
+
+	inc RAX
+	jmp MergeArray_LeftTempArrayLoopHead
+
+MergeArray_LeftTempArrayLoopEnd:
+
+	xor RAX, RAX
+
+MergeArray_RightTempArrayLoopHead:
+	
+	cmp RAX, R15
+	jge MergeArray_RightTempArrayLoopEnd
+
+MergeArray_RightTempArrayLoop:
+
+	; arr[middle + 1 + i]
+	mov R11, R8
+	add R11, RAX
+	inc R11
+
+	mov R10D, dword ptr [RCX + 4 * R11]
+
+	; rightTempArray[i] = arr[middle + 1 + i]
+	mov [R13 + 4 * RAX], R10D
+	
+	inc RAX
+	jmp MergeArray_RightTempArrayLoopHead
+
+MergeArray_RightTempArrayLoopEnd:
+
+	mov RAX, RDX	; RAX - k = left
+
+	; we no longer need (left, middle, right)
+	xor R8, R8	; R8 - i = 0
+	xor R9, R9	; R9 - j = 0
+
+MergeArray_FirstWhileLoopHead:
+
+	; while (i < leftArrayLength && j < rightArrayLength)
+	cmp R8, R14
+	jge MergeArray_SecondWhileLoopHead
+
+	cmp R9, R15
+	jge MergeArray_SecondWhileLoopHead
+
+MergeArray_FirstWhileLoop:
+
+	; R10 = leftTempArray[i]
+	mov R10D, dword ptr [R12 + 4 * R8]
+
+	; R11 = rightTempArray[j]
+	mov R11D, dword ptr [R13 + 4 * R9]
+
+	cmp R10D, R11D
+	jg MergeArray_FirstWhileLoop_Greater
+
+MergeArray_FirstWhileLoop_LessEqual:
+	
+	; if (leftTempArray[i] <= rightTempArray[j])
+	; arr[k++] = leftTempArray[i++];
+
+	mov EBX, dword ptr [R12 + 4 * R8]
+
+	mov [RCX + 4 * RAX], EBX
+
+	inc R8
+	inc RAX
+
+	jmp MergeArray_FirstWhileLoopHead
+
+MergeArray_FirstWhileLoop_Greater:
+
+	; else
+	; arr[k++] = rightTempArray[j++];
+
+	mov EBX, dword ptr [R13 + 4 * R9]
+
+	mov [RCX + 4 * RAX], EBX
+
+	inc R9
+	inc RAX
+
+	jmp MergeArray_FirstWhileLoopHead
+
+MergeArray_SecondWhileLoopHead:
+
+	; while (i < leftArrayLength)
+
+	cmp R8, R14
+	jge MergeArray_ThirdWhileLoopHead
+
+MergeArray_SecondWhileLoop:
+
+	; arr[k++] = leftTempArray[i++];
+
+	mov EBX, dword ptr [R12 + 4 * R8]
+
+	mov [RCX + 4 * RAX], EBX
+
+	inc R8
+	inc RAX
+
+	jmp MergeArray_SecondWhileLoopHead
+
+MergeArray_ThirdWhileLoopHead:
+
+	; while (j < rightArrayLength)
+	cmp R9, R15
+	jge MergeArray_ProcedureEnd
+
+MergeArray_ThirdWhileLoop:
+	
+	; arr[k++] = rightTempArray[j++];
+	
+	mov EBX, dword ptr [R13 + 4 * R9]
+
+	mov [RCX + 4 * RAX], EBX
+
+	inc R9
+	inc RAX
+
+	jmp MergeArray_ThirdWhileLoopHead
+
+MergeArray_ProcedureEnd:
+
+	; free temporary arrays
+	push RCX
+
+	mov RCX, R12
+	sub RSP, 32
+	call free
+	add RSP, 32
+
+	mov RCX, R13
+	sub RSP, 32
+	call free
+	add RSP, 32
+
+	pop RCX
+
+	ret
+
+MergeArray endp
 
 
 QuickSort proc

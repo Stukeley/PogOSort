@@ -32,9 +32,6 @@
     <ClCompile Include="c\sources\IsSorted.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="c\sources\Benchmarks.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c\headers\DataGeneration.h">
@@ -47,9 +44,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="c\headers\IsSorted.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="c\headers\Benchmarks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
