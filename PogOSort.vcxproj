@@ -143,12 +143,14 @@
     <None Include="asm\Pogosort.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="c\sources\Benchmarks.c" />
     <ClCompile Include="c\sources\DataGeneration.c" />
     <ClCompile Include="c\sources\IsSorted.c" />
     <ClCompile Include="c\sources\main.c" />
     <ClCompile Include="c\sources\PrintArray.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="c\headers\Benchmarks.h" />
     <ClInclude Include="c\headers\DataGeneration.h" />
     <ClInclude Include="c\headers\extern.h" />
     <ClInclude Include="c\headers\IsSorted.h" />

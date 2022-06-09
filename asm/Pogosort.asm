@@ -27,7 +27,9 @@ ret
 
 DllEntry endp
 
+
 ; --- Quadratic Sorting Algorithms --- ;
+
 
 ; Bubble Sort
 ; Simplest sorting algorithm, which only swaps two adjacent elements repeatedly, until the array is sorted.
@@ -206,6 +208,7 @@ InsertionSort_AlgorithmEnd:
 
 InsertionSort endp
 
+
 ; Shell Sort
 ; Quite similar to Insertion or Bubble Sort, Shell Sort exchanges items in the array.
 ; The idea is to make it so that taking every h-th number in the array produces a sorted array.
@@ -243,6 +246,8 @@ ShellSort_InnerLoop:
 
 	; if (j >= gap) && (arr[j - gap] > tempValue), get in the loop
 
+ShellSort_SecondInnerLoopHead:
+
 	cmp R10D, R14D	; j >= gap
 	jl ShellSort_InnerLoopIter
 
@@ -261,36 +266,31 @@ ShellSort_SecondInnerLoop:
 
 	mov R13D, dword ptr [RCX + 4 * RAX] ; R13D = arr[j]
 
-	mov EAX, R10D
-	sub EAX, R14D
+	mov EBX, R10D
+	sub EBX, R14D
 
-	mov R12D, dword ptr [RCX + 4 * RAX]	; R14D = arr[j - gap]
+	mov R12D, dword ptr [RCX + 4 * RBX]	; R14D = arr[j - gap]
 
 	; swap
-	mov [RCX + 4 * RAX], R13D
+	mov [RCX + 4 * RBX], R13D
 	mov [RCX + 4 * RAX], R12D
 
 	; j = j - gap
 	sub R10D, R14D
 
-ShellSort_SecondInnerLoopIter:
-
-	; if not (j >= gap) && (arr[j - gap] > tempValue), break out of this loop
-
-	cmp R10D, R14D	; j >= gap
-	jl ShellSort_InnerLoopIter
-
-	mov R12D, dword ptr [RCX + 4 * RAX]	; arr[j - gap]
-
-	cmp R12D, R11D
-	jle ShellSort_InnerLoopIter
-
-	jmp ShellSort_SecondInnerLoop
+	jmp ShellSort_SecondInnerLoopHead
 
 ShellSort_InnerLoopIter:
 
 	; arr[j] = tempValue;
 	mov [RCX + 4 * R10], R11D
+
+	; i++
+	inc R9D
+
+	; if i < n, loop
+	cmp R9, RDX
+	jl ShellSort_InnerLoop
 
 ShellSort_OuterLoopIter:
 	inc R15D
@@ -307,17 +307,22 @@ ShellSort_AlgorithmEnd:
 
 ShellSort endp
 
+
 ; --- Logarithmic Sorting Algorithms --- ;
+
 
 MergeSort proc
 
 MergeSort endp
 
+
 QuickSort proc
 
 QuickSort endp
 
+
 ; --- Linear Sorting Algorithms --- ;
+
 
 ; Counting Sort
 ; Counting Sort is a simple linear algorithm which uses a secondary array to sort the input. It only goes through the array once.
@@ -429,6 +434,7 @@ CountingSort_AlgorithmEnd:
 
 CountingSort endp
 
+
 ; Radix Sort
 ; Quite similar to Counting Sort, but performs several iterations on the data.
 ; Each iteration, the input array is sorted by one digit. After going through all digits, the array is sorted.
@@ -473,7 +479,9 @@ RadixSort_PrepLoop:
 
 RadixSort endp
 
+
 ; --- Esoteric Sorting Algorithms --- ;
+
 
 ; Dictator Sort
 ; An esoteric sorting algorithm, in which all elements not in order are removed from the array.
@@ -574,6 +582,7 @@ DictatorSort endp
 ; There is no guarantee the algorithm will always succeed.
 ; There is a maximum number of iterations this procedure will perform, after which the result will be returned no matter what.
 ; Uses the Sattolo's algorithm for shuffling array.
+; Returns the number of iterations it took for the algorithm to end.
 ; Worst complexity: infinite
 ; Average complexity: (n+1)!
 ; Best complexity: n
@@ -652,6 +661,7 @@ BogoSort_Sorted:
 	ret
 
 BogoSort endp
+
 
 ; Is Sorted
 ; Helper function used by several algorithms, eg. Pogo Sort.

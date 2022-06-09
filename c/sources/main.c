@@ -5,7 +5,7 @@
 #include "../headers/PrintArray.h"
 #include "../headers/IsSorted.h"
 
-#define N 100
+#define N 10
 #define FCOUNT 5
 
 int main() 
@@ -23,19 +23,56 @@ int main()
 
     for (int i =0;i<FCOUNT;i++)
     {
+        char* sortName = 0;
+
+        switch (i)
+        {
+            case 0:
+                sortName = "Bubble Sort";
+                break;
+
+            case 1:
+                sortName = "Insertion Sort";
+                break;
+
+            case 2:
+                sortName = "Selection Sort";
+                break;
+
+            case 3:
+                sortName = "Counting Sort";
+                break;
+
+            case 4:
+                sortName = "Shell Sort";
+                break;
+
+            default:
+                sortName = "Unlisted sort";
+                break;
+        }
+
+        printf("Sorting Algorithm: %s\n\n", sortName);
+
         int32_t* copy = malloc(N * sizeof(int32_t));
 
         memcpy(copy, arr, N * sizeof(int32_t));
 
+        printf("Before:\n");
+
         PrintArray(copy, N);
 
-        (*sorts[i]) (copy, N);
+        printf("\nAfter:\n");
+
+        (*sorts[i])(copy, N);
 
         PrintArray(copy, N);
 
         bool isArraySorted = IsSorted(copy, N);
 
-        printf("\n\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+        printf("\nIsArraySorted: %s\n\n", isArraySorted ? "true" : "false");
+
+        printf("---------------------\n\n");
         
         free(copy);
     }
@@ -60,7 +97,7 @@ int main()
         free(smallArray);
     }
 
-    // Dictator Sort is separate as it has a return value
+    // Dictator Sort is separate as it has a return value (newly created array).
     {
         int32_t* copy = malloc(N * sizeof(int32_t));
 
