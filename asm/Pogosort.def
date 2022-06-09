@@ -5,10 +5,10 @@ EXPORTS BubbleSort
 EXPORTS SelectionSort
 EXPORTS InsertionSort
 EXPORTS ShellSort
-EXPORTS CountingSort
-EXPORTS RadixSort
 EXPORTS MergeSort
 EXPORTS QuickSort
+EXPORTS CountingSort
+EXPORTS RadixSort
 EXPORTS DictatorSort
 EXPORTS BogoSort
 ; --------------------------------------

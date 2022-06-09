@@ -3,6 +3,7 @@
 ; Algorithm sources:
 ; https://en.wikipedia.org/
 ; https://www.geeksforgeeks.org/
+; https://www.w3resource.com/
 ; https://www.youtube.com/c/WhatsACreel
 
 .DATA
@@ -10,11 +11,15 @@
 extern malloc: proc
 extern free: proc
 
+; A constant not used anywhere, which specifies the amount of bytes per int - we assume that all ints in this application are 32-bit
+BytesPerInt DWORD 4
+
+; For Bogo Sort - more info in comments above BogoSort procedure
 Divisor DWORD 13897
 Term DWORD 9521
 MaxIterations DWORD 100000
-BytesPerInt DWORD 4
 
+; For Shell Sort - more info in comments above ShellSort procedure
 GapSequence DWORD 1750, 701, 301, 132, 57, 23, 10, 4, 1
 
 .CODE

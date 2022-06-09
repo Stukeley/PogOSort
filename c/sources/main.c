@@ -5,8 +5,8 @@
 #include "../headers/PrintArray.h"
 #include "../headers/IsSorted.h"
 
-#define N 10
-#define FCOUNT 6
+#define N 100
+#define FCOUNT 6    // Number of "generic" functions which don't have a return type and take only two parameters
 
 int main() 
 {
@@ -107,7 +107,7 @@ int main()
         free(copy);
     }
 
-    // QuickSort is separate as it takes more parameters.
+    // Quick Sort is separate as it takes more parameters.
     {
         printf("Sorting Algorithm: Quick Sort\n\n");
 
