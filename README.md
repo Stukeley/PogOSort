@@ -44,6 +44,10 @@ Firstly and most importantly - **it would go against the idea of this project**.
 
 Secondly - in my opinion, using SIMD for this project would be quite awkward. While SIMD instructions certainly have better performance than their scalar counterparts, the amount of time and lines of code it would take to prepare and consume a vector would likely neglect any gained performance. And, on top of that, it's almost impossible to have our input arrays always have a number of elements divisible by 4 (or 8, or 16, depending on which instruction set we would use), and consuming the last few elements that "did not fit in a vector" would be even more costly.
 
+## Why use int32_t in C instead of just int?
+
+**To ensure all integers are 32 bits in size.** If we just used int, and the program was run on a more "exotic" machine, or if we used a compiler that is not among the popular ones, not only would the application not work at all, but it could seriously damage our memory. The code written in ASM assumes all numbers are 32-bit integers, and using int32_t helps us ensure that.
+
 ## Sources
 
 Resources used to create this project (also listed at the top of the ASM source file):
