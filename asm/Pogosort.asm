@@ -410,6 +410,8 @@ sub R15, R8
 ; Create two temporary arrays
 push RCX
 push RDX
+push R8
+push R9
 
 mov RCX, R14
 shl RCX, 2	; multiply amount to allocate by 4 [in bytes]
@@ -429,10 +431,12 @@ add RSP, 32
 
 mov R13, RAX	; R13 - pointer to right temporary array
 
+pop R9
+pop R8
 pop RDX
 pop RCX
 
-xor RAX, RAX
+xor RAX, RAX	; RAX - i in this fragment
 
 ; Copy elements from input array to left temporary array
 MergeArray_LeftTempArrayLoopHead:
